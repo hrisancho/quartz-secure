@@ -1,0 +1,22 @@
+# Dockerfile.nginx
+FROM nginx:1.27-alpine
+
+# Удаляем стандартный конфиг
+RUN rm /etc/nginx/conf.d/default.conf
+
+# Создаем директорию для наших шаблонов
+RUN mkdir -p /etc/nginx/templates
+
+# Копируем ДВА шаблона: один для HTTP, другой для HTTP+HTTPS
+COPY nginx/http-only.conf.template /etc/nginx/templates/
+COPY nginx/default.conf.template /etc/nginx/templates/
+
+# Копируем и делаем исполняемым наш скрипт-переключатель
+COPY nginx/entrypoint.sh /docker-entrypoint.sh
+RUN chmod +x /docker-entrypoint.sh
+
+# Указываем, что при старте контейнера должен запускаться наш скрипт
+ENTRYPOINT ["/docker-entrypoint.sh"]
+
+# Команда по умолчанию, которую выполнит наш скрипт в конце
+CMD ["nginx", "-g", "daemon off;"]
