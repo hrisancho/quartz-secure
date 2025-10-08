@@ -38,3 +38,13 @@ You can help speed up fixing the problem by either
 
 **Additional context**
 Add any other context about the problem here.
+
+**Component**
+- [ ] Core Quartz
+- [ ] Authentication System
+- [ ] Admin Panel
+- [ ] Docker Setup
+- [ ] Other
+
+**Security Issue?**
+If this is a security vulnerability, please email security@[your-domain] instead of opening a public issue.

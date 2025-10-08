@@ -3,18 +3,20 @@ name: Build and Test
 on:
   pull_request:
     branches:
-      - v4
+      - main  # Изменено с v4
+      - v4    # Оставляем для PR из upstream
   push:
     branches:
-      - v4
+      - main  # Изменено с v4
   workflow_dispatch:
 
 jobs:
   build-and-test:
-    if: ${{ github.repository == 'jackyzha0/quartz' }}
+    # Убираем ограничение на репозиторий
+    # if: ${{ github.repository == 'jackyzha0/quartz' }}
     strategy:
       matrix:
-        os: [windows-latest, macos-latest, ubuntu-latest]
+        os: [ubuntu-latest]  # Упрощаем - только Linux для экономии
     runs-on: ${{ matrix.os }}
     permissions:
       contents: write
@@ -44,29 +46,7 @@ jobs:
       - name: Test
         run: npm test
 
-      - name: Ensure Quartz builds, check bundle info
+      - name: Ensure Quartz builds
         run: npx quartz build --bundleInfo -d docs
 
-  publish-tag:
-    if: ${{ github.repository == 'jackyzha0/quartz' && github.ref == 'refs/heads/v4' }}
-    runs-on: ubuntu-latest
-    permissions:
-      contents: write
-    steps:
-      - uses: actions/checkout@v5
-        with:
-          fetch-depth: 0
-      - name: Setup Node
-        uses: actions/setup-node@v5
-        with:
-          node-version: 22
-      - name: Get package version
-        run: node -p -e '`PACKAGE_VERSION=${require("./package.json").version}`' >> $GITHUB_ENV
-      - name: Create release tag
-        uses: pkgdeps/git-tag-action@v3
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          github_repo: ${{ github.repository }}
-          version: ${{ env.PACKAGE_VERSION }}
-          git_commit_sha: ${{ github.sha }}
-          git_tag_prefix: "v"
+  # Удаляем publish-tag job - не нужен для форка

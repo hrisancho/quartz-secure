@@ -4,17 +4,32 @@ updates:
     directory: "/"
     schedule:
       interval: "weekly"
+    # Добавляем авто-merge для patch обновлений
     groups:
       production-dependencies:
         applies-to: "version-updates"
         patterns:
           - "*"
+    open-pull-requests-limit: 10
+    labels:
+      - "dependencies"
+
   - package-ecosystem: "github-actions"
     directory: "/"
     schedule:
-      interval: "weekly"
+      interval: "monthly"  # Реже для actions
     groups:
       ci-dependencies:
         applies-to: "version-updates"
         patterns:
           - "*"
+    labels:
+      - "ci"
+
+  # Добавляем для Docker
+  - package-ecosystem: "docker"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+    labels:
+      - "docker"
